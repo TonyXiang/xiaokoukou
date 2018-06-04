@@ -34,4 +34,4 @@
 
 
 ### addEventListener注意事项
-多次绑定 window.addEventListener('resize', () => {}）之后，安卓手机在触发'resize'事件的时候会卡死；
+多次绑定 `window.addEventListener('resize', () => {}）` 之后，安卓手机在触发 `resize` 事件的时候会卡死；

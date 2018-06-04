@@ -1,5 +1,4 @@
-# xiaokoukou
-# 备忘录
+# xiaokoukou备忘录
 
 ### axios post下载文件
     exportInvoice(data) {
@@ -32,3 +31,7 @@
         loading.close()
         console.log(e)
     })
+
+
+### addEventListener注意事项
+多次绑定 window.addEventListener('resize', () => {}）之后，安卓手机在触发'resize'事件的时候会卡死；

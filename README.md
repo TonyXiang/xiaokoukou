@@ -39,7 +39,7 @@
 
 ### 1px边框
 ```scss
-.bx-uploader-item--border {
+.border-1px {
   &::after {
     content: '';
     position: absolute;
@@ -54,7 +54,7 @@
 }
 
 @media (-webkit-device-pixel-ratio: 1.5), (-webkit-min-device-pixel-ratio: 1.5) {
-  .bx-uploader-item--border {
+  .border-1px {
     &::after {
       content: '';
       position: absolute;
@@ -71,7 +71,7 @@
 }
 
 @media (-webkit-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2) {
-  .bx-uploader-item--border {
+  .border-1px {
     &::after {
       content: '';
       position: absolute;
@@ -88,7 +88,7 @@
 }
 
 @media (-webkit-device-pixel-ratio: 3), (-webkit-min-device-pixel-ratio: 3) {
-  .bx-uploader-item--border {
+  .border-1px {
     &::after {
       content: '';
       position: absolute;

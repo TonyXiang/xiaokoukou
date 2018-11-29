@@ -104,3 +104,68 @@
   }
 }
 ```
+
+### iPhone X 适配
+`viewport-fit=cover`
+```scss
+.page-footer{
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  min-height: 100px;
+  background: #f8f8f8;
+  box-sizing: initial;
+}
+.page-btn{
+  height: 72px;
+  width: 92%;
+  margin-top: 14px;
+  margin-left: 4%;
+  background: #508CEE;
+  background-size: cover;
+  border-radius: 8px;
+  font-size: 28px;
+  color: #fff;
+  line-height: 72px;
+  text-align: center;
+}
+.page-btn-empty {
+  height: 14px;
+}
+
+.page-footer-empty {
+  box-sizing: initial;
+  min-height: 100px;
+  width: 100%;
+}
+
+.has-padding {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+```
+```html
+    <div class="page-footer" :class="{'has-padding': hasPadding}">
+      <div class="page-btn" @click="loadeData">底部按钮</div>
+      <div class="page-btn-empty"></div>
+    </div>
+    <div class="page-footer-empty" :class="{'has-padding': hasPadding}"></div>
+```
+```js
+  loadData() {
+    this.add = !this.add
+    this.$nextTick(function () {
+      // DOM 现在更新了
+      // `this` 绑定到当前实例
+      this.resetPadding()
+    })
+  },
+  resetPadding() {
+    if (window.innerHeight >= document.body.clientHeight) {
+      this.hasPadding = false
+    } else {
+      this.hasPadding = true
+    }
+  }
+ ```

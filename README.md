@@ -169,3 +169,55 @@
     }
   }
  ```
+ 
+### js获取图片旋转角度
+[exif-js](https://www.npmjs.com/package/exif-js)是一个第三方的库，可以获取图片的信息，包括图片旋转角度等；如果只是为了获取图片角度，而引入整个包的话，代码体积过大；如果使用下面的方法来获取图片旋转角度的话，会大大减少代码体积；
+
+```js
+function getOrientation(file) {
+  return new Promise((resolve, reject) => {
+    try {
+      const reader = new FileReader()
+      reader.onload = function(e) {
+        const view = new DataView(e.target.result)
+        if (view.getUint16(0, false) !== 0xffd8) {
+          resolve(-2) // 不是jpeg
+        }
+        const length = view.byteLength
+        let offset = 2
+        while (offset < length) {
+          if (view.getUint16(offset + 2, false) <= 8) {
+            resolve(-1) // 不包含旋转信息
+          }
+          const marker = view.getUint16(offset, false)
+          offset += 2
+          if (marker === 0xffe1) {
+            offset += 2
+            if (view.getUint32(offset, false) !== 0x45786966) {
+              resolve(-1) // 不包含旋转信息
+            }
+            const little = view.getUint16((offset += 6), false) === 0x4949
+            offset += view.getUint32(offset + 4, little)
+            const tags = view.getUint16(offset, little)
+            offset += 2
+            for (let i = 0; i < tags; i += 1) {
+              if (view.getUint16(offset + i * 12, little) === 0x0112) {
+                resolve(view.getUint16(offset + i * 12 + 8, little))
+              }
+            }
+          } else if ((marker & 0xff00) !== 0xff00) {
+            break
+          } else {
+            offset += view.getUint16(offset, false)
+          }
+        }
+        resolve(-1) // 不包含旋转信息
+      }
+      reader.readAsArrayBuffer(file)
+    } catch (e) {
+      reject(e)
+    }
+  })
+}
+```
+参考自: [accessing-jpeg-exif-rotation-data-in-javascript-on-the-client-side](https://stackoverflow.com/questions/7584794/accessing-jpeg-exif-rotation-data-in-javascript-on-the-client-side)

@@ -1,5 +1,56 @@
 # xiaokoukou备忘录
 
+### puppeteer
+```js
+const browser = await puppeteer.launch({
+  args: ['--no-sandbox'],
+  headless: true,
+  // executablePath:
+  //   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+})
+const page = await browser.newPage()
+page.on('dialog', async dialog => {
+  await dialog.dismiss()
+})
+await page.setViewport({
+  width: 1800,
+  height: 1200,
+})
+
+// 设置 navigator.userAgent，防止被识别为无头浏览器
+await page.setUserAgent(
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+)
+
+// 设置 navigator.webdriver，防防止被识别为程序控制的浏览器
+const preloadFile = fs.readFileSync('./src/preload.js', 'utf8')
+await page.evaluateOnNewDocument(preloadFile)
+this.browser = browser
+this.page = page
+
+// 设置下载行为，指定下载目录
+await this.page._client.send('Page.setDownloadBehavior', { behavior: 'allow', downloadPath: './downloads' })
+```
+
+src/preload.js
+```js
+Object.defineProperty(navigator, 'webdriver', {
+  get: function () {
+    return undefined
+  }
+})
+
+Object.defineProperty(window, 'open', {
+  get: function () {
+    return function (url) {
+      window.location.href = url
+    }
+  }
+})
+
+```
+
+
 ### axios post下载文件
 ```js
     exportInvoice(data) {

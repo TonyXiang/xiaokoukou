@@ -272,3 +272,85 @@ function getOrientation(file) {
 }
 ```
 参考自: [accessing-jpeg-exif-rotation-data-in-javascript-on-the-client-side](https://stackoverflow.com/questions/7584794/accessing-jpeg-exif-rotation-data-in-javascript-on-the-client-side)
+
+### 解析 Excel
+```js
+const XLSX = require('xlsx')
+const fs = require('fs')
+const path = require('path')
+
+const LetterMap = {
+  A: 1,
+  B: 2,
+  C: 3,
+  D: 4,
+  E: 5,
+  F: 6,
+  G: 7,
+  H: 8,
+  I: 9,
+  J: 10,
+  K: 11,
+  L: 12,
+  M: 13,
+  N: 14,
+  O: 15,
+  P: 17,
+  Q: 18,
+  R: 19,
+  S: 20
+}
+
+const transferData = function (data) {
+  const sheetData = data.Sheets[data.SheetNames[0]]
+  const backUpCellMap = {}
+  const result = {}
+  for (let key in sheetData) {
+    const cell = sheetData[key]
+    const cellKey = key.substring(1, key.length)
+    const rowKey = key.substring(0, 1)
+    if (cell.t) {
+      if (!result[cellKey]) {
+        result[cellKey] = {
+          value: []
+        }
+      }
+      if (LetterMap[rowKey] > 1 && LetterMap[rowKey] > result[cellKey].value.length + 1) {
+        for(let letter in LetterMap) {
+          if (LetterMap[letter] === LetterMap[rowKey] - 1) {
+            result[cellKey].value.push(backUpCellMap[letter])
+            break
+          }
+        }
+      } else {
+        backUpCellMap[rowKey] = cell.v || ''
+      }
+      result[cellKey].value.push(cell.v || '')
+      if (cellKey === '2' && cell.l && cell.l.Target) {
+        result[cellKey].link = cell.l.Target
+      }
+    }
+  }
+
+  let dataList = []
+  for (let key in result) {
+    const row = result[key]
+    row.value.push(row.link ? row.link : '')
+    dataList.push(row.value)
+  }
+  return JSON.stringify(dataList)
+}
+
+const file = process.argv[2]
+
+// 判断传入文件是否存在
+const filePath = path.join(__dirname, './excel/' + file) // excel文件路径
+if (!fs.existsSync(filePath)) {
+  return console.log('error: 该excel文件不存在！')
+}
+
+const fileData = XLSX.readFile(filePath)
+
+const result = transferData(fileData)
+console.log(result)
+```

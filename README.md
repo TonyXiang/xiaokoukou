@@ -341,16 +341,8 @@ const transferData = function (data) {
   return JSON.stringify(dataList)
 }
 
-const file = process.argv[2]
-
-// 判断传入文件是否存在
-const filePath = path.join(__dirname, './excel/' + file) // excel文件路径
-if (!fs.existsSync(filePath)) {
-  return console.log('error: 该excel文件不存在！')
-}
-
+const filePath = path.join(__dirname, 'src/a.xlsx')
 const fileData = XLSX.readFile(filePath)
-
 const result = transferData(fileData)
 console.log(result)
 ```

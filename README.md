@@ -1,5 +1,15 @@
 # xiaokoukou备忘录
 
+### Nginx add_header
+Nginx add_header 只对200,201，204,206,301,302,303,304,307 这些状态码生效，对于401 405 403这些状态码是不生效的。
+
+解决办法:
+
+```config
+add_header Access-Control-Allow-Origin * always;
+```
+加上always参数后，无论状态码如何都会生效
+
 ### puppeteer
 ```js
 const browser = await puppeteer.launch({
